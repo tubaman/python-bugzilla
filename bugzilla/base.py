@@ -1222,13 +1222,17 @@ class _Bug(object):
         self.bugzilla._addcomment(self.bug_id,comment,private,timestamp,
                                   worktime,bz_gid)
         # TODO reload bug data here?
-    def get_comments(self):
+    def _get_comments(self):
         '''Get the list of comments for this bug.'''
-        data = self.bugzilla._comments([self.bug_id])
-        comments = []
-        for comment_data in data['bugs'][str(self.bug_id)]['comments']:
-            comments.append(_Comment(self, **comment_data)) 
-        return comments
+        try:
+            return self._comments
+        except IndexError:
+            data = self.bugzilla._comments([self.bug_id])
+            self._comments = []
+            for comment_data in data['bugs'][str(self.bug_id)]['comments']:
+                self._comments.append(_Comment(self, **comment_data)) 
+            return self._comments
+    comments = property(_get_comments)
 
     def close(self,resolution,dupeid=0,fixedin='',comment='',isprivate=False,private_in_it=False,nomail=False):
         '''Close this bug. 
