@@ -497,6 +497,9 @@ class BugzillaBase(object):
     def _search(self,query):
         '''IMPLEMENT ME: Search bugzilla and return a list of matching bugs.'''
         raise NotImplementedError
+    def _comments(self, id_list):
+        '''IMPLEMENT ME: Return a list of comments.'''
+        raise NotImplementedError
 
     # these return Bug objects 
     def getbug(self,id):
@@ -550,6 +553,10 @@ class BugzillaBase(object):
         '''
         r = self._search(query)
         return [_Bug(bugzilla=self,dict=b) for b in r['bugs']]
+
+    def comments(self, id_list):
+        r = self._comments(id_list)
+        return r
 
     #---- Methods for modifying existing bugs.
 

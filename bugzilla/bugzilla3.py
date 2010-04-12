@@ -169,3 +169,6 @@ class Bugzilla34(Bugzilla32):
         'sql'. 
         ''' 
         return self._proxy.Bug.search(query)
+
+    def _comments(self, id_list):
+        return self._proxy.Bug.comments({'ids': id_list})
