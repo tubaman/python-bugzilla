@@ -1222,6 +1222,14 @@ class _Bug(object):
         self.bugzilla._addcomment(self.bug_id,comment,private,timestamp,
                                   worktime,bz_gid)
         # TODO reload bug data here?
+    def get_comments(self):
+        '''Get the list of comments for this bug.'''
+        data = self.bugzilla._comments([self.bug_id])
+        comments = []
+        for comment_data in data['bugs'][str(self.bug_id)]['comments']:
+            comments.append(_Comment(self, **comment_data)) 
+        return comments
+
     def close(self,resolution,dupeid=0,fixedin='',comment='',isprivate=False,private_in_it=False,nomail=False):
         '''Close this bug. 
         Valid values for resolution are in bz.querydefaults['resolution_list']
@@ -1339,6 +1347,30 @@ class _Bug(object):
 
 # Backwards compatibility
 Bug = _Bug
+
+class _Comment(object):
+    '''A container object for a bug comment. Requires a _Bug instance - 
+    every comment is associated with a bug
+    '''
+    def __init__(self, bug, **kwargs):
+        self.bug = bug
+        self.__dict__.update(kwargs)
+
+    def __str__(self):
+        '''Return a simple string representation of this comment
+
+        This is available only for compatibility. Using 'str(comment)' and
+        'print comment' is not recommended because of potential encoding issues.
+        Please use unicode(comment) where possible.
+        '''
+        return unicode(self).encode(locale.getpreferredencoding(), 'replace')
+
+    def __unicode__(self):
+        '''Return a simple unicode string representation of this comment'''
+        return u"%s - %s" % (self.author,self.text)
+
+    def __repr__(self):
+        return '<Comment by %s>' % self.author
 
 # TODO: attach(file), getflag(), setflag()
 # TODO: add a sync() method that writes the changed data in the Bug object
