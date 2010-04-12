@@ -494,6 +494,9 @@ class BugzillaBase(object):
     def _query(self,query):
         '''IMPLEMENT ME: Query bugzilla and return a list of matching bugs.'''
         raise NotImplementedError
+    def _search(self,query):
+        '''IMPLEMENT ME: Search bugzilla and return a list of matching bugs.'''
+        raise NotImplementedError
 
     # these return Bug objects 
     def getbug(self,id):
@@ -537,6 +540,16 @@ class BugzillaBase(object):
         q = {'product':product,'version':version,'component':component,
              'long_desc':string,'long_desc_type':matchtype}
         return self.query(q)
+
+    def search(self,query):
+        '''Search bugzilla and return a list of matching bugs.
+        query must be a dict with fields like those in in querydata['fields'].
+        Returns a list of Bug objects.
+        Also see the _search() method for details about the underlying
+        implementation.
+        '''
+        r = self._search(query)
+        return [_Bug(bugzilla=self,dict=b) for b in r['bugs']]
 
     #---- Methods for modifying existing bugs.
 

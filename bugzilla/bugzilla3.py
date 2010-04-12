@@ -123,7 +123,7 @@ class Bugzilla32(Bugzilla3):
 
 # Bugzilla 3.4 adds some new goodies on top of Bugzilla32.
 class Bugzilla34(Bugzilla32):
-    version = '0.1'
+    version = '0.2'
     user_agent = bugzilla.base.user_agent + ' Bugzilla34/%s' % version
 
     def _getusers(self, ids=None, names=None, match=None):
@@ -154,3 +154,18 @@ class Bugzilla34(Bugzilla32):
                     ' names, or match kwarg.')
 
         return self._proxy.User.get(params)
+
+    def _search(self,query):
+        '''Search bugzilla and return a list of matching bugs.
+        query must be a dict with fields like those in in querydata['fields'].
+        Returns a dict like this: {'bugs':buglist,
+                                   'displaycolumns':columnlist,
+                                   'sql':querystring}
+        buglist is a list of dicts describing bugs. You can specify which 
+        columns/keys will be listed in the bugs by setting 'column_list' in
+        the query; otherwise the default columns are used (see the list in
+        querydefaults['default_column_list']). The list of columns will be
+        in 'displaycolumns', and the SQL query used by this query will be in
+        'sql'. 
+        ''' 
+        return self._proxy.Bug.search(query)

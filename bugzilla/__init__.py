@@ -9,7 +9,7 @@
 # option) any later version.  See http://www.gnu.org/copyleft/gpl.html for
 # the full text of the license.
 
-from bugzilla3 import Bugzilla3, Bugzilla32
+from bugzilla3 import Bugzilla3, Bugzilla32, Bugzilla34
 from rhbugzilla import RHBugzilla, RHBugzilla3
 from nvlbugzilla import NovellBugzilla
 from base import version
@@ -55,7 +55,9 @@ def getBugzillaClassForURL(url):
     elif bzversion.startswith('3.'):
         if bzversion.startswith('3.0'):
             c = Bugzilla3
-        else: # 3.1 or higher
+        elif bzversion.startswith('3.4'):
+            c = Bugzilla34
+        else: # 3.1 or 3.2
             c = Bugzilla32
 
     return c
