@@ -176,6 +176,9 @@ class Bugzilla34(Bugzilla32):
         '''
         return self._proxy.Bug.search(query)
 
+    def _comments(self, id_list):
+        return self._proxy.Bug.comments({'ids': id_list})
+
 # Bugzilla 3.6 was released April 13, 2010
 # XXX TODO probably more new methods from Bugzilla 3.6 we could use
 class Bugzilla36(Bugzilla34):
